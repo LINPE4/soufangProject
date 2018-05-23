@@ -1,4 +1,4 @@
-package com.peter;
+package com.imooc;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
