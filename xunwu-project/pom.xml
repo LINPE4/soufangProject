@@ -85,6 +85,13 @@
 			<version>${thymeleaf-extras-springsecurity4.version}</version>
 		</dependency>
 
+		<!-- SpringBoot自带热加载开发工具 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- redis session依赖 -->
 		<!--<dependency>
 			<groupId>org.springframework.session</groupId>
@@ -94,13 +101,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-
-		&lt;!&ndash; SpringBoot自带热加载开发工具 &ndash;&gt;
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 
 		&lt;!&ndash; https://mvnrepository.com/artifact/joda-time/joda-time &ndash;&gt;
