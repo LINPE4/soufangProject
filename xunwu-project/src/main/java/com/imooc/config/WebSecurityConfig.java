@@ -1,6 +1,8 @@
 package com.imooc.config;
 
+import com.imooc.security.AuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,7 +48,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     public void configGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("admin").password("admin")
-                .roles("ADMIN").and();
+        // 内存认证配置
+//        auth.inMemoryAuthentication().withUser("admin").password("admin")
+//                .roles("ADMIN").and();
+        auth.authenticationProvider(authProvider()).eraseCredentials(true);
+    }
+
+    @Bean
+    public AuthProvider authProvider() {
+        return new AuthProvider();
     }
 }
