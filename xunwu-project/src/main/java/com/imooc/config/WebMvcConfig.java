@@ -63,8 +63,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements Application
         templateEngine.setEnableSpringELCompiler(true);
 
         // 支持SpringSecurity方言
-//        SpringSecurityDialect securityDialect = new SpringSecurityDialect();
-//        templateEngine.addDialect(securityDialect);
+        SpringSecurityDialect securityDialect = new SpringSecurityDialect();
+        templateEngine.addDialect(securityDialect);
         return templateEngine;
     }
 
