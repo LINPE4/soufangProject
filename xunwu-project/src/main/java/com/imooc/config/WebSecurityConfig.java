@@ -1,6 +1,7 @@
 package com.imooc.config;
 
 import com.imooc.security.AuthProvider;
+import com.imooc.security.LoginAuthFailHandler;
 import com.imooc.security.LoginUrlEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login") // 配置角色登录处理入口
+                .failureHandler(authFailHandler())  // 登陆失败处理器
                 .and()
                 .logout()
                 .logoutUrl("/logout")
@@ -45,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(loginUrlEntryPoint())
+                .authenticationEntryPoint(urlEntryPoint())
                 .accessDeniedPage("/403");
 
         http.csrf().disable();
@@ -68,7 +70,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthProvider();
     }
 
-    public LoginUrlEntryPoint loginUrlEntryPoint() {
-        return new LoginUrlEntryPoint("user/login");
+    @Bean
+    public LoginUrlEntryPoint urlEntryPoint() {
+        return new LoginUrlEntryPoint("/user/login");
+    }
+
+    @Bean
+    public LoginAuthFailHandler authFailHandler() {
+        return new LoginAuthFailHandler(urlEntryPoint());
     }
 }
