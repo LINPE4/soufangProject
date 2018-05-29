@@ -4,7 +4,6 @@ import com.imooc.entity.Role;
 import com.imooc.entity.User;
 import com.imooc.repository.RoleRepository;
 import com.imooc.repository.UserRepository;
-import com.imooc.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;

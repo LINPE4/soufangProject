@@ -1,4 +1,4 @@
-package com.imooc.service;
+package com.imooc.service.user;
 
 import com.imooc.entity.User;
 
