@@ -1,5 +1,6 @@
 package com.imooc.service.house;
 
+import com.imooc.entity.SupportAddress;
 import com.imooc.service.ServiceMultiResult;
 import com.imooc.web.dto.SubwayDTO;
 import com.imooc.web.dto.SubwayStationDTO;
@@ -10,6 +11,7 @@ import com.qiniu.http.Response;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 地址服务接口
@@ -21,6 +23,14 @@ public interface IAddressService {
      * @return
      */
     ServiceMultiResult<SupportAddressDTO> findAllCities();
+
+    /**
+     * 根据英文简写获取具体区域的信息
+     * @param cityEnName
+     * @param regionEnName
+     * @return
+     */
+    Map<SupportAddress.Level, SupportAddressDTO> findCityAndRegion(String cityEnName, String regionEnName);
 
     /**
      * 根据城市英文简写获取该城市所有支持的区域信息
@@ -42,4 +52,6 @@ public interface IAddressService {
      * @return
      */
     List<SubwayStationDTO> findAllStationBySubway(Long subwayId);
+
+
 }

@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 瓦力.
@@ -44,6 +46,19 @@ public class AddressServiceImpl implements IAddressService {
         }
 
         return new ServiceMultiResult<>(addressDTOS.size(), addressDTOS);
+    }
+
+    @Override
+    public Map<SupportAddress.Level, SupportAddressDTO> findCityAndRegion(String cityEnName, String regionEnName) {
+        Map<SupportAddress.Level, SupportAddressDTO> result = new HashMap<>();
+
+        SupportAddress city = supportAddressRepository.findByEnNameAndLevel(cityEnName, SupportAddress.Level.CITY
+                .getValue());
+        SupportAddress region = supportAddressRepository.findByEnNameAndBelongTo(regionEnName, city.getEnName());
+
+        result.put(SupportAddress.Level.CITY, modelMapper.map(city, SupportAddressDTO.class));
+        result.put(SupportAddress.Level.REGION, modelMapper.map(region, SupportAddressDTO.class));
+        return result;
     }
 
     @Override
