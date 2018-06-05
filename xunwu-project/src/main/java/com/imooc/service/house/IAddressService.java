@@ -2,6 +2,7 @@ package com.imooc.service.house;
 
 import com.imooc.entity.SupportAddress;
 import com.imooc.service.ServiceMultiResult;
+import com.imooc.service.ServiceResult;
 import com.imooc.web.dto.SubwayDTO;
 import com.imooc.web.dto.SubwayStationDTO;
 import com.imooc.web.dto.SupportAddressDTO;
@@ -53,5 +54,17 @@ public interface IAddressService {
      */
     List<SubwayStationDTO> findAllStationBySubway(Long subwayId);
 
+    /**
+     * 获取地铁线信息
+     * @param subwayId
+     * @return
+     */
+    ServiceResult<SubwayDTO> findSubway(Long subwayId);
 
+    /**
+     * 获取地铁站点信息
+     * @param stationId
+     * @return
+     */
+    ServiceResult<SubwayStationDTO> findSubwayStation(Long stationId);
 }

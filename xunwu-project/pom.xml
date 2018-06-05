@@ -116,6 +116,12 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+
 		<!-- redis session依赖 -->
 		<!--<dependency>
 			<groupId>org.springframework.session</groupId>
