@@ -1,8 +1,10 @@
 package com.imooc.web.admin;
 
 import com.google.gson.Gson;
+import com.imooc.base.ApiDataTableResponse;
 import com.imooc.base.ApiResponse;
 import com.imooc.entity.SupportAddress;
+import com.imooc.service.ServiceMultiResult;
 import com.imooc.service.ServiceResult;
 import com.imooc.service.house.IAddressService;
 import com.imooc.service.house.IHouseService;
@@ -10,6 +12,7 @@ import com.imooc.service.house.IQiNiuService;
 import com.imooc.web.dto.HouseDTO;
 import com.imooc.web.dto.QiNiuPutRet;
 import com.imooc.web.dto.SupportAddressDTO;
+import com.imooc.web.form.DatatableSearch;
 import com.imooc.web.form.HouseForm;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -143,6 +146,29 @@ public class AdminController {
         }
 
         return ApiResponse.ofSuccess(ApiResponse.Status.NOT_VALID_PARAM);
+    }
+
+    /**
+     * 房源列表页
+     * @return
+     */
+    @GetMapping("admin/house/list")
+    public String houseListPage() {
+        return "admin/house-list";
+    }
+
+    @PostMapping("admin/houses")
+    @ResponseBody
+    public ApiDataTableResponse houses(@ModelAttribute DatatableSearch searchBody) {
+        ServiceMultiResult<HouseDTO> result = houseService.adminQuery(searchBody);
+
+        ApiDataTableResponse response = new ApiDataTableResponse(ApiResponse.Status.SUCCESS);
+        response.setData(result.getResult());
+        response.setRecordsFiltered(result.getTotal());
+        response.setRecordsTotal(result.getTotal());
+
+        response.setDraw(searchBody.getDraw());
+        return response;
     }
 }
 
