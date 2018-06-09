@@ -12,6 +12,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.Valid;
 
+import com.google.common.collect.Maps;
+import com.imooc.base.HouseSort;
 import com.imooc.base.HouseStatus;
 import com.imooc.base.LoginUserUtil;
 import com.imooc.entity.*;
@@ -355,7 +357,8 @@ public class HouseServiceImpl implements IHouseService {
 //        }
 //
 //        return simpleQuery(rentSearch);
-        Sort sort = new Sort(Sort.Direction.DESC, "lastUpdateTime");
+//        Sort sort = new Sort(Sort.Direction.DESC, "lastUpdateTime");
+        Sort sort = HouseSort.generateSort(rentSearch.getOrderBy(), rentSearch.getOrderDirection());
         int page = rentSearch.getStart() / rentSearch.getSize();
         Pageable pageable = new PageRequest(page, rentSearch.getSize(), sort);
 
@@ -363,19 +366,41 @@ public class HouseServiceImpl implements IHouseService {
             Predicate predicate = cb.equal(root.get("status"), HouseStatus.PASSES.getValue());
             predicate = cb.and(predicate, cb.equal(root.get("cityEnName"), rentSearch.getCityEnName()));
 
+            if (HouseSort.DISTANCE_TO_SUBWAY_KEY.equals(rentSearch.getOrderBy())) {
+                predicate = cb.and(predicate, cb.gt(root.get(HouseSort.DISTANCE_TO_SUBWAY_KEY), -1));
+            }
             return predicate;
         };
         Page<House> houses = houseRepository.findAll(specification, pageable);
         List<HouseDTO> houseDTOS = new ArrayList<>();
+        List<Long> houseIds = new ArrayList<>();
+        Map<Long, HouseDTO> idToHouseMap = Maps.newHashMap();
         houses.forEach(house -> {
             HouseDTO houseDTO = modelMapper.map(house, HouseDTO.class);
             houseDTO.setCover(this.cdnPrefix + house.getCover());
             houseDTOS.add(houseDTO);
-        });
 
+            houseIds.add(house.getId());
+            idToHouseMap.put(house.getId(), houseDTO);
+        });
+        wrapperHouseList(houseIds, idToHouseMap);
         return new ServiceMultiResult<>(houses.getTotalElements(), houseDTOS);
     }
 
+    private void wrapperHouseList(List<Long> houseIds, Map<Long, HouseDTO> idToHouseMap) {
+        List<HouseDetail> houseDetails = houseDetailRepository.findAllByHouseIdIn(houseIds);
+        houseDetails.forEach(houseDetail -> {
+            HouseDTO houseDTO = idToHouseMap.get(houseDetail.getHouseId());
+            HouseDetailDTO detailDTO = modelMapper.map(houseDetail, HouseDetailDTO.class);
+            houseDTO.setHouseDetail(detailDTO);
+        });
+
+        List<HouseTag> houseTags = houseTagRepository.findAllByHouseIdIn(houseIds);
+        houseTags.forEach(houseTag -> {
+            HouseDTO house = idToHouseMap.get(houseTag.getHouseId());
+            house.getTags().add(houseTag.getName());
+        });
+    }
 
     /**
      * 图片对象列表信息填充

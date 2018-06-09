@@ -266,15 +266,15 @@
                                     <div class="chanquan">
                                         <div class="left agency">
                                             <div class="view-label left">
-                                                <!--<span th:if="${house.houseDetail.subwayLineName != null}">-->
-                                                    <!--<span class="fang-subway"></span>-->
-                                                    <!--<span class="fang-subway-ex">-->
-                                                        <!--<span>距离地铁-->
-                                                            <!--<span th:text="${house.houseDetail.subwayLineName}"></span>-->
-                                                            <!--<span th:text="${house.houseDetail.subwayStationName}"></span>站-->
-                                                            <!--<span th:text="${house.distanceToSubway}"></span>米</span>-->
-                                                    <!--</span>-->
-                                                <!--</span>-->
+                                                <span th:if="${house.houseDetail.subwayLineName != null}">
+                                                    <span class="fang-subway"></span>
+                                                    <span class="fang-subway-ex">
+                                                        <span>距离地铁
+                                                            <span th:text="${house.houseDetail.subwayLineName}"></span>
+                                                            <span th:text="${house.houseDetail.subwayStationName}"></span>站
+                                                            <span th:text="${house.distanceToSubway}"></span>米</span>
+                                                    </span>
+                                                </span>
                                                 <span th:each="tag: ${house.tags}">
                                                     <span class="decoration"></span>
                                                     <span class="decoration-ex">
