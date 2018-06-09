@@ -17,7 +17,7 @@ import java.util.Map;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping(value = {"/","index"})
     public String index(Model model) {
         model.addAttribute("name","hello, spring el");
         return "index";

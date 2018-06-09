@@ -5,6 +5,7 @@ import com.imooc.service.ServiceResult;
 import com.imooc.web.dto.HouseDTO;
 import com.imooc.web.form.DatatableSearch;
 import com.imooc.web.form.HouseForm;
+import com.imooc.web.form.RentSearch;
 
 /**
  * 房屋管理服务接口
@@ -67,4 +68,11 @@ public interface IHouseService {
      * @return
      */
     ServiceResult updateStatus(Long id, int status);
+
+    /**
+     * 查询房源信息集
+     * @param rentSearch
+     * @return
+     */
+    ServiceMultiResult<HouseDTO> query(RentSearch rentSearch);
 }

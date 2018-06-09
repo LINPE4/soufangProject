@@ -17,6 +17,7 @@ import com.imooc.base.LoginUserUtil;
 import com.imooc.entity.*;
 import com.imooc.repository.*;
 import com.imooc.web.form.DatatableSearch;
+import com.imooc.web.form.RentSearch;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -334,12 +335,45 @@ public class HouseServiceImpl implements IHouseService {
         houseRepository.updateStatus(id, status);
 
         // 上架更新索引 其他情况都要删除索引
-        if (status == HouseStatus.PASSES.getValue()) {
-            searchService.index(id);
-        } else {
-            searchService.remove(id);
-        }
+//        if (status == HouseStatus.PASSES.getValue()) {
+//            searchService.index(id);
+//        } else {
+//            searchService.remove(id);
+//        }
         return ServiceResult.success();
+    }
+
+    @Override
+    public ServiceMultiResult<HouseDTO> query(RentSearch rentSearch) {
+//        if (rentSearch.getKeywords() != null && !rentSearch.getKeywords().isEmpty()) {
+//            ServiceMultiResult<Long> serviceResult = searchService.query(rentSearch);
+//            if (serviceResult.getTotal() == 0) {
+//                return new ServiceMultiResult<>(0, new ArrayList<>());
+//            }
+//
+//            return new ServiceMultiResult<>(serviceResult.getTotal(), wrapperHouseResult(serviceResult.getResult()));
+//        }
+//
+//        return simpleQuery(rentSearch);
+        Sort sort = new Sort(Sort.Direction.DESC, "lastUpdateTime");
+        int page = rentSearch.getStart() / rentSearch.getSize();
+        Pageable pageable = new PageRequest(page, rentSearch.getSize(), sort);
+
+        Specification<House> specification = (root, query, cb) -> {
+            Predicate predicate = cb.equal(root.get("status"), HouseStatus.PASSES.getValue());
+            predicate = cb.and(predicate, cb.equal(root.get("cityEnName"), rentSearch.getCityEnName()));
+
+            return predicate;
+        };
+        Page<House> houses = houseRepository.findAll(specification, pageable);
+        List<HouseDTO> houseDTOS = new ArrayList<>();
+        houses.forEach(house -> {
+            HouseDTO houseDTO = modelMapper.map(house, HouseDTO.class);
+            houseDTO.setCover(this.cdnPrefix + house.getCover());
+            houseDTOS.add(houseDTO);
+        });
+
+        return new ServiceMultiResult<>(houses.getTotalElements(), houseDTOS);
     }
 
 
