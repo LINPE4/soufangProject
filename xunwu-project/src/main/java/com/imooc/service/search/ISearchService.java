@@ -1,5 +1,8 @@
 package com.imooc.service.search;
 
+import com.imooc.service.ServiceMultiResult;
+import com.imooc.web.form.RentSearch;
+
 /**
  * 检索接口
  * Created by 瓦力.
@@ -17,5 +20,10 @@ public interface ISearchService {
      */
     void remove(Long houseId);
 
-
+    /**
+     * 查询房源接口
+     * @param rentSearch
+     * @return
+     */
+    ServiceMultiResult<Long> query(RentSearch rentSearch);
 }

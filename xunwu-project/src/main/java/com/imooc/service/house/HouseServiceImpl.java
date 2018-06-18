@@ -349,34 +349,61 @@ public class HouseServiceImpl implements IHouseService {
         return ServiceResult.success();
     }
 
+    private List<HouseDTO> wrapperHouseResult(List<Long> houseIds) {
+        List<HouseDTO> result = new ArrayList<>();
+
+        Map<Long, HouseDTO> idToHouseMap = new HashMap<>();
+        Iterable<House> houses = houseRepository.findAll(houseIds);
+        houses.forEach(house -> {
+            HouseDTO houseDTO = modelMapper.map(house, HouseDTO.class);
+            houseDTO.setCover(this.cdnPrefix + house.getCover());
+            idToHouseMap.put(house.getId(), houseDTO);
+        });
+
+        wrapperHouseList(houseIds, idToHouseMap);
+
+        // 矫正顺序
+        for (Long houseId : houseIds) {
+            result.add(idToHouseMap.get(houseId));
+        }
+        return result;
+    }
+
     @Override
     public ServiceMultiResult<HouseDTO> query(RentSearch rentSearch) {
-//        if (rentSearch.getKeywords() != null && !rentSearch.getKeywords().isEmpty()) {
-//            ServiceMultiResult<Long> serviceResult = searchService.query(rentSearch);
-//            if (serviceResult.getTotal() == 0) {
-//                return new ServiceMultiResult<>(0, new ArrayList<>());
-//            }
-//
-//            return new ServiceMultiResult<>(serviceResult.getTotal(), wrapperHouseResult(serviceResult.getResult()));
-//        }
-//
-//        return simpleQuery(rentSearch);
-//        Sort sort = new Sort(Sort.Direction.DESC, "lastUpdateTime");
+        if (rentSearch.getKeywords() != null && !rentSearch.getKeywords().isEmpty()) {
+            ServiceMultiResult<Long> serviceResult = searchService.query(rentSearch);
+            if (serviceResult.getTotal() == 0) {
+                return new ServiceMultiResult<>(0, new ArrayList<>());
+            }
+
+            return new ServiceMultiResult<>(serviceResult.getTotal(), wrapperHouseResult(serviceResult.getResult()));
+        }
+
+        return simpleQuery(rentSearch);
+    }
+
+    private ServiceMultiResult<HouseDTO> simpleQuery(RentSearch rentSearch) {
         Sort sort = HouseSort.generateSort(rentSearch.getOrderBy(), rentSearch.getOrderDirection());
         int page = rentSearch.getStart() / rentSearch.getSize();
+
         Pageable pageable = new PageRequest(page, rentSearch.getSize(), sort);
 
-        Specification<House> specification = (root, query, cb) -> {
-            Predicate predicate = cb.equal(root.get("status"), HouseStatus.PASSES.getValue());
-            predicate = cb.and(predicate, cb.equal(root.get("cityEnName"), rentSearch.getCityEnName()));
+        Specification<House> specification = (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.equal(root.get("status"), HouseStatus.PASSES.getValue());
+
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("cityEnName"), rentSearch.getCityEnName()));
 
             if (HouseSort.DISTANCE_TO_SUBWAY_KEY.equals(rentSearch.getOrderBy())) {
-                predicate = cb.and(predicate, cb.gt(root.get(HouseSort.DISTANCE_TO_SUBWAY_KEY), -1));
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.gt(root.get(HouseSort.DISTANCE_TO_SUBWAY_KEY), -1));
             }
             return predicate;
         };
+
         Page<House> houses = houseRepository.findAll(specification, pageable);
         List<HouseDTO> houseDTOS = new ArrayList<>();
+
+
         List<Long> houseIds = new ArrayList<>();
         Map<Long, HouseDTO> idToHouseMap = Maps.newHashMap();
         houses.forEach(house -> {
@@ -387,6 +414,8 @@ public class HouseServiceImpl implements IHouseService {
             houseIds.add(house.getId());
             idToHouseMap.put(house.getId(), houseDTO);
         });
+
+
         wrapperHouseList(houseIds, idToHouseMap);
         return new ServiceMultiResult<>(houses.getTotalElements(), houseDTOS);
     }

@@ -30,7 +30,7 @@ public class ElasticSearchConfig {
         Settings settings = Settings.builder()
 //                .put("cluster.name", this.esName)
                 .put("cluster.name", "elasticsearch")
-                .put("client.transport.sniff", true)
+                .put("client.transport.sniff", false)   //如果是外网需要设置为false
                 .build();
 
         InetSocketTransportAddress master = new InetSocketTransportAddress(
