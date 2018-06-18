@@ -34,4 +34,9 @@ public interface ISearchService {
      * 获取补全建议关键词
      */
     ServiceResult<List<String>> suggest(String prefix);
+
+    /**
+     * 聚合特定小区的房间数
+     */
+    ServiceResult<Long> aggregateDistrictHouse(String cityEnName, String regionEnName, String district);
 }
