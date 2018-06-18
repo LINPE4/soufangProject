@@ -1,7 +1,10 @@
 package com.imooc.service.search;
 
 import com.imooc.service.ServiceMultiResult;
+import com.imooc.service.ServiceResult;
 import com.imooc.web.form.RentSearch;
+
+import java.util.List;
 
 /**
  * 检索接口
@@ -26,4 +29,9 @@ public interface ISearchService {
      * @return
      */
     ServiceMultiResult<Long> query(RentSearch rentSearch);
+
+    /**
+     * 获取补全建议关键词
+     */
+    ServiceResult<List<String>> suggest(String prefix);
 }

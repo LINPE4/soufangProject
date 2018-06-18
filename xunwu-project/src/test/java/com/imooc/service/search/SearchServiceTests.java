@@ -21,7 +21,7 @@ public class SearchServiceTests extends ApplicationTests {
 
     @Test
     public void testIndex() {
-        for (Long targetHouseId = 16L; targetHouseId <=21; targetHouseId ++) {
+        for (Long targetHouseId = 15L; targetHouseId <=21; targetHouseId ++) {
             searchService.index(targetHouseId);
         }
         searchService.index(24L);
