@@ -21,8 +21,8 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
-//    @Value("${spring.thymeleaf.cache}")
-//    private boolean thymeleafCacheEnable = true;
+    @Value("${spring.thymeleaf.cache}")
+    private boolean thymeleafCacheEnable = true;
 
     private ApplicationContext applicationContext;
 
@@ -49,7 +49,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements Application
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(this.applicationContext);
         templateResolver.setCharacterEncoding("UTF-8");
-//        templateResolver.setCacheable(thymeleafCacheEnable);
+        templateResolver.setCacheable(thymeleafCacheEnable);
         return templateResolver;
     }
 

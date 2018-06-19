@@ -39,4 +39,11 @@ public interface ISearchService {
      * 聚合特定小区的房间数
      */
     ServiceResult<Long> aggregateDistrictHouse(String cityEnName, String regionEnName, String district);
+
+    /**
+     * 聚合城市数据
+     * @param cityEnName
+     * @return
+     */
+    ServiceMultiResult<HouseBucketDTO> mapAggregate(String cityEnName);
 }
