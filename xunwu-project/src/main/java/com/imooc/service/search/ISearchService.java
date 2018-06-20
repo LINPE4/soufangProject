@@ -2,6 +2,7 @@ package com.imooc.service.search;
 
 import com.imooc.service.ServiceMultiResult;
 import com.imooc.service.ServiceResult;
+import com.imooc.web.form.MapSearch;
 import com.imooc.web.form.RentSearch;
 
 import java.util.List;
@@ -47,5 +48,17 @@ public interface ISearchService {
      */
     ServiceMultiResult<HouseBucketDTO> mapAggregate(String cityEnName);
 
+    /**
+     * 城市级别查询
+     * @return
+     */
+    ServiceMultiResult<Long> mapQuery(String cityEnName, String orderBy,
+                                      String orderDirection, int start, int size);
 
+    /**
+     * 精确范围数据查询
+     * @param mapSearch
+     * @return
+     */
+    ServiceMultiResult<Long> mapQuery(MapSearch mapSearch);
 }

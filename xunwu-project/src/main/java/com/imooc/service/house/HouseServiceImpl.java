@@ -19,8 +19,7 @@ import com.imooc.base.LoginUserUtil;
 import com.imooc.entity.*;
 import com.imooc.repository.*;
 import com.imooc.service.search.ISearchService;
-import com.imooc.web.form.DatatableSearch;
-import com.imooc.web.form.RentSearch;
+import com.imooc.web.form.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,8 +37,6 @@ import com.imooc.service.ServiceResult;
 import com.imooc.web.dto.HouseDTO;
 import com.imooc.web.dto.HouseDetailDTO;
 import com.imooc.web.dto.HousePictureDTO;
-import com.imooc.web.form.HouseForm;
-import com.imooc.web.form.PhotoForm;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 
@@ -490,5 +487,27 @@ public class HouseServiceImpl implements IHouseService {
         houseDetail.setTraffic(houseForm.getTraffic());
         return null;
 
+    }
+
+    @Override
+    public ServiceMultiResult<HouseDTO> wholeMapQuery(MapSearch mapSearch) {
+        ServiceMultiResult<Long> serviceResult = searchService.mapQuery(mapSearch.getCityEnName(), mapSearch.getOrderBy(), mapSearch.getOrderDirection(), mapSearch.getStart(), mapSearch.getSize());
+
+        if (serviceResult.getTotal() == 0) {
+            return new ServiceMultiResult<>(0, new ArrayList<>());
+        }
+        List<HouseDTO> houses = wrapperHouseResult(serviceResult.getResult());
+        return new ServiceMultiResult<>(serviceResult.getTotal(), houses);
+    }
+
+    @Override
+    public ServiceMultiResult<HouseDTO> boundMapQuery(MapSearch mapSearch) {
+        ServiceMultiResult<Long> serviceResult = searchService.mapQuery(mapSearch);
+        if (serviceResult.getTotal() == 0) {
+            return new ServiceMultiResult<>(0, new ArrayList<>());
+        }
+
+        List<HouseDTO> houses = wrapperHouseResult(serviceResult.getResult());
+        return new ServiceMultiResult<>(serviceResult.getTotal(), houses);
     }
 }
