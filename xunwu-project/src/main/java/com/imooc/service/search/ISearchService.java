@@ -46,4 +46,6 @@ public interface ISearchService {
      * @return
      */
     ServiceMultiResult<HouseBucketDTO> mapAggregate(String cityEnName);
+
+
 }

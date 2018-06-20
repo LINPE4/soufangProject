@@ -9,11 +9,14 @@ import com.imooc.base.RentValueBlock;
 import com.imooc.entity.House;
 import com.imooc.entity.HouseDetail;
 import com.imooc.entity.HouseTag;
+import com.imooc.entity.SupportAddress;
 import com.imooc.repository.HouseDetailRepository;
 import com.imooc.repository.HouseRepository;
 import com.imooc.repository.HouseTagRepository;
+import com.imooc.repository.SupportAddressRepository;
 import com.imooc.service.ServiceMultiResult;
 import com.imooc.service.ServiceResult;
+import com.imooc.service.house.IAddressService;
 import com.imooc.web.form.RentSearch;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeAction;
 import org.elasticsearch.action.admin.indices.analyze.AnalyzeRequestBuilder;
@@ -85,6 +88,13 @@ public class SearchServiceImpl implements ISearchService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private SupportAddressRepository supportAddressRepository;
+
+    @Autowired
+    private IAddressService addressService;
+
+
     @Override
     public void index(Long houseId) {
         House house = houseRepository.findOne(houseId);
@@ -100,6 +110,18 @@ public class SearchServiceImpl implements ISearchService {
         }
 
         modelMapper.map(detail, indexTemplate);
+
+        SupportAddress city = supportAddressRepository.findByEnNameAndLevel(house.getCityEnName(), SupportAddress.Level.CITY.getValue());
+
+        SupportAddress region = supportAddressRepository.findByEnNameAndLevel(house.getRegionEnName(), SupportAddress.Level.REGION.getValue());
+
+        String address = city.getCnName() + region.getCnName() + house.getStreet() + house.getDistrict() + detail.getDetailAddress();
+        ServiceResult<BaiduMapLocation> location = addressService.getBaiduMapLocation(city.getCnName(), address);
+        if (!location.isSuccess()) {
+//            this.index(message.getHouseId(), message.getRetry() + 1);
+            return;
+        }
+        indexTemplate.setLocation(location.getResult());
 
         List<HouseTag> tags = tagRepository.findAllByHouseId(houseId);
         if (tags != null && !tags.isEmpty()) {

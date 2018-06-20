@@ -50,16 +50,16 @@ public class HouseIndexTemplate {
     private List<String> tags;
 
     private List<HouseSuggest> suggest;
-//
-//    private BaiduMapLocation location;
-//
-//    public BaiduMapLocation getLocation() {
-//        return location;
-//    }
-//
-//    public void setLocation(BaiduMapLocation location) {
-//        this.location = location;
-//    }
+
+    private BaiduMapLocation location;
+
+    public BaiduMapLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(BaiduMapLocation location) {
+        this.location = location;
+    }
 
     public Long getHouseId() {
         return houseId;
