@@ -153,10 +153,10 @@ public class SearchServiceImpl implements ISearchService {
 
 //        ServiceResult serviceResult = addressService.lbsUpload(location.getResult(), house.getStreet() + house.getDistrict(),
 //                city.getCnName() + region.getCnName() + house.getStreet() + house.getDistrict(),
-//                message.getHouseId(), house.getPrice(), house.getArea());
+//                houseId, house.getPrice(), house.getArea());
 //
 //        if (!success || !serviceResult.isSuccess()) {
-//            this.index(message.getHouseId(), message.getRetry() + 1);
+//            this.index(houseId);
 //        } else {
 //            logger.debug("Index success with house " + houseId);
 //
@@ -234,6 +234,15 @@ public class SearchServiceImpl implements ISearchService {
         BulkByScrollResponse response = builder.get();
         long deleted = response.getDeleted();
         logger.debug("Delete total " + deleted);
+
+
+//        ServiceResult serviceResult = addressService.removeLbs(houseId);
+//
+//        if (!serviceResult.isSuccess() || deleted <= 0) {
+//            logger.warn("Did not remove data from es for response: " + response);
+//            // 重新加入消息队列
+//            this.remove(houseId);
+//        }
 
     }
 

@@ -26,6 +26,7 @@ public class QiNiuServiceTests extends ApplicationTests {
 
         try {
             Response response = qiNiuService.uploadFile(file);
+            System.out.println(response.bodyString());
             Assert.assertTrue(response.isOK());
         } catch (QiniuException e) {
             e.printStackTrace();
